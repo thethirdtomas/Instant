@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:instant/widgets/WelcomeBanner.dart';
+import 'package:instant/widgets/GradiantButton.dart';
 
 class Welcome extends StatefulWidget {
   @override
@@ -11,6 +13,13 @@ class _WelcomeState extends State<Welcome> {
     return Scaffold(
       body: Container(
         color: Colors.black,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            WelcomeBanner(),
+            GradiantButton(text:"Start Messaging", onTap: (){},)
+          ],
+        ),
       ),
     );
   }
