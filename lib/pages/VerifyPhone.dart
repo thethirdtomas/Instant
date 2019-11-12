@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:instant/pages/EnterPhone.dart';
@@ -15,14 +16,41 @@ class VerifyPhone extends StatefulWidget {
 class _VerifyPhoneState extends State<VerifyPhone> {
   bool invalidCode = false;
   var code = MaskedTextController(mask: '000000');
+  String verificationId;
 
   @override
   initState() {
     super.initState();
-    Auth.sendVerificationCode(number: widget.number);
+    Auth.sendVerificationCode(
+      number: widget.number,
+      verificationCompleted: verificationCompleted,
+      verificationFailed: verificationFailed,
+      codeSent: codeSent,
+      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,      
+    );
   }
 
-  confirmCode() {}
+  verificationCompleted(AuthCredential cred){
+    Auth.signIn(cred);
+  }
+
+  verificationFailed(AuthException e){
+    print(e.message);
+  }
+
+  codeSent(String vid, [int forceResendingToken]){
+    verificationId = vid;
+    print("Code has been send this is the vid $vid");
+  }
+
+  codeAutoRetrievalTimeout(String vid){
+    print("Time out, this is the vid $vid");
+  }
+
+  confirmCode() {
+    AuthCredential cred = Auth.verifyCode(code.text, verificationId);
+    Auth.signIn(cred);
+  }
 
   @override
   Widget build(BuildContext context) {
