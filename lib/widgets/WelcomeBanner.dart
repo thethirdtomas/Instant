@@ -96,7 +96,7 @@ class WelcomeBanner extends StatelessWidget {
           padding: const EdgeInsets.only(left: 75, right: 75),
           child: Text(
             "The World's fastest instant messaging app. It's free, secure, and powered by Google!",
-            style: TextStyle(color: Colors.green[100]),
+            style: TextStyle(color: Colors.green[100], fontFamily: "Montserrat"),
             textAlign: TextAlign.center,
           ),
         )

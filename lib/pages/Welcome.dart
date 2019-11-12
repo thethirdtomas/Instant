@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instant/pages/EnterPhone.dart';
 import 'package:instant/widgets/WelcomeBanner.dart';
 import 'package:instant/widgets/GradiantButton.dart';
 
@@ -17,7 +18,13 @@ class _WelcomeState extends State<Welcome> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             WelcomeBanner(),
-            GradiantButton(text:"Start Messaging", onTap: (){},)
+            GradiantButton(
+              text: "Start Messaging",
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => EnterPhone()));
+              },
+            )
           ],
         ),
       ),
