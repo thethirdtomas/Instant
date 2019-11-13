@@ -13,6 +13,9 @@ class _CreateProfileState extends State<CreateProfile> {
 
   getImage() async{
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if(image == null){
+      return;
+    }
     setState(() {
      profileImage = image; 
     });

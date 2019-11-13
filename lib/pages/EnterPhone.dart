@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:instant/pages/VerifyPhone.dart';
+import 'package:instant/pages/Welcome.dart';
 import 'package:instant/widgets/GradiantButton.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 
@@ -52,7 +53,8 @@ class _EnterPhoneState extends State<EnterPhone> {
               children: <Widget>[
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => Welcome()));
                   },
                   icon: Icon(Icons.arrow_back),
                   color: Colors.white,
