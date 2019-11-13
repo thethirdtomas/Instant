@@ -6,6 +6,7 @@ import 'package:instant/pages/EnterPhone.dart';
 import 'package:instant/utilities/Auth.dart';
 import 'package:instant/widgets/GradiantButton.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class VerifyPhone extends StatefulWidget {
   final String number;
@@ -16,6 +17,7 @@ class VerifyPhone extends StatefulWidget {
 
 class _VerifyPhoneState extends State<VerifyPhone> {
   bool invalidCode = false;
+  bool loading = false;
   var code = MaskedTextController(mask: '000000');
   String verificationId;
 
@@ -32,6 +34,10 @@ class _VerifyPhoneState extends State<VerifyPhone> {
   }
 
   verificationCompleted(AuthCredential cred) {
+    setState(() {
+     loading = true;
+     code.text = "******"; 
+    });
     signIn(cred);
   }
 
@@ -41,7 +47,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
 
   codeSent(String vid, [int forceResendingToken]) {
     verificationId = vid;
-    print("Code has been send this is the vid $vid");
+    print("Code has been sent, this is the vid $vid");
   }
 
   codeAutoRetrievalTimeout(String vid) {
@@ -49,6 +55,9 @@ class _VerifyPhoneState extends State<VerifyPhone> {
   }
 
   confirmCode() {
+    setState(() {
+     loading = true; 
+    });
     AuthCredential cred = Auth.verifyCode(code.text, verificationId);
     signIn(cred);
   }
@@ -59,6 +68,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
           context, MaterialPageRoute(builder: (context) => Dashboard()));
     } else {
       setState(() {
+        loading = false;
         invalidCode = true;
         code.clear();
       });
@@ -125,7 +135,8 @@ class _VerifyPhoneState extends State<VerifyPhone> {
                 ),
               ],
             ),
-            GradiantButton(
+            loading?SpinKitWave(color: Colors.white, size: 30.0)
+            :GradiantButton(
               onTap: confirmCode,
               text: "Confirm Code",
             )
