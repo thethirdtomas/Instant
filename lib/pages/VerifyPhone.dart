@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:instant/pages/Dashboard.dart';
 import 'package:instant/pages/EnterPhone.dart';
 import 'package:instant/utilities/Auth.dart';
 import 'package:instant/widgets/GradiantButton.dart';
@@ -26,30 +27,42 @@ class _VerifyPhoneState extends State<VerifyPhone> {
       verificationCompleted: verificationCompleted,
       verificationFailed: verificationFailed,
       codeSent: codeSent,
-      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,      
+      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
     );
   }
 
-  verificationCompleted(AuthCredential cred){
-    Auth.signIn(cred);
+  verificationCompleted(AuthCredential cred) {
+    signIn(cred);
   }
 
-  verificationFailed(AuthException e){
+  verificationFailed(AuthException e) {
     print(e.message);
   }
 
-  codeSent(String vid, [int forceResendingToken]){
+  codeSent(String vid, [int forceResendingToken]) {
     verificationId = vid;
     print("Code has been send this is the vid $vid");
   }
 
-  codeAutoRetrievalTimeout(String vid){
+  codeAutoRetrievalTimeout(String vid) {
     print("Time out, this is the vid $vid");
   }
 
   confirmCode() {
     AuthCredential cred = Auth.verifyCode(code.text, verificationId);
-    Auth.signIn(cred);
+    signIn(cred);
+  }
+
+  signIn(AuthCredential cred) async {
+    if (await Auth.signIn(cred)) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Dashboard()));
+    } else {
+      setState(() {
+        invalidCode = true;
+        code.clear();
+      });
+    }
   }
 
   @override

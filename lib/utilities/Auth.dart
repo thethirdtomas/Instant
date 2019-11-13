@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Auth {
+  static String uid;
   static Future<void> sendVerificationCode({
       String number,
       Function(AuthCredential) verificationCompleted,
@@ -17,15 +18,20 @@ class Auth {
         codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
   }
 
-  static Future<void> signIn(AuthCredential cred) async{
-    AuthResult result = await FirebaseAuth.instance.signInWithCredential(cred);
-    print("This is the users id ${result.user.uid}");
+  static Future<bool> signIn(AuthCredential cred) async{
+    try{
+      AuthResult result = await FirebaseAuth.instance.signInWithCredential(cred);
+      uid = result.user.uid;
+      return true;
+    }catch(e){
+      return false;
+    }
+    
   }
 
   static AuthCredential verifyCode(String smsCode, String verificationId) {
     AuthCredential cred = PhoneAuthProvider.getCredential(
         verificationId: verificationId, smsCode: smsCode);
-    print("This is the creditantls $cred");
     return cred;
   }
 }
