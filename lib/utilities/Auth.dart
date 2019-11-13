@@ -44,16 +44,4 @@ class Auth {
     return false;
   }
 
-  static Future<bool> usernameExist(String username) async {
-    QuerySnapshot q = await Firestore.instance
-        .collection('users')
-        .where('username', isEqualTo: username)
-        .getDocuments();
-
-    if (q.documents.length != 0) {
-      return true;
-    }
-
-    return false;
-  }
 }

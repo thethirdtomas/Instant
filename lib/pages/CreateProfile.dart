@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:instant/pages/Dashboard.dart';
 import 'package:instant/utilities/Auth.dart';
+import 'package:instant/utilities/FirestoreTask.dart';
 import 'package:instant/widgets/GradiantButton.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -47,7 +50,7 @@ class _CreateProfileState extends State<CreateProfile> {
     if(username.text == ''){
       errorCount += 1;
       usernameError = true;
-    }else if(await Auth.usernameExist(username.text)){
+    }else if(await FirestoreTask.usernameExist(username.text.replaceAll(' ',''))){
       errorCount += 1;
       usernameError = true;
       username.clear();
@@ -59,12 +62,32 @@ class _CreateProfileState extends State<CreateProfile> {
     }
 
     if(errorCount == 0){
-      print("success");
+      if(await createProfile()){
+        Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Dashboard()));
+      }else{
+        return;
+      }
     }
 
     setState(() {
      loading = false; 
     });
+  }
+
+  Future<bool> createProfile() async{
+    String imageUrl = await FirestoreTask.uploadImage(profileImage);
+    if(imageUrl == null){
+      return false;
+    }
+
+    FirestoreTask.createProfile(
+      name: name.text.trim(),
+      username: username.text.replaceAll(' ',''),
+      bio: bio.text.trim(),
+      profileImage: imageUrl
+    );
+    return true;
   }
 
   @override
