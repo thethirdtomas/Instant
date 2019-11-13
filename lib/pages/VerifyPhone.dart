@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:instant/pages/CreateProfile.dart';
 import 'package:instant/pages/Dashboard.dart';
 import 'package:instant/pages/EnterPhone.dart';
 import 'package:instant/utilities/Auth.dart';
@@ -64,8 +65,14 @@ class _VerifyPhoneState extends State<VerifyPhone> {
 
   signIn(AuthCredential cred) async {
     if (await Auth.signIn(cred)) {
-      Navigator.pushReplacement(
+      if(await Auth.userExist()){
+        Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Dashboard()));
+      }else{
+        Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => CreateProfile()));
+      }
+      
     } else {
       setState(() {
         loading = false;

@@ -21,7 +21,7 @@ class _WelcomeState extends State<Welcome> {
             GradiantButton(
               text: "Start Messaging",
               onTap: () {
-                Navigator.push(context,
+                Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => EnterPhone()));
               },
             )
