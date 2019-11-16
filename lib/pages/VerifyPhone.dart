@@ -35,9 +35,9 @@ class _VerifyPhoneState extends State<VerifyPhone> {
   }
 
   verificationCompleted(AuthCredential cred) {
+    print("Verification was complete");
     setState(() {
      loading = true;
-     code.text = "******"; 
     });
     signIn(cred);
   }
