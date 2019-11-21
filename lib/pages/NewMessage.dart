@@ -19,14 +19,14 @@ class _NewMessageState extends State<NewMessage> {
       loading = true;
     });
 
-    String recipientId = await FirestoreTask.findIdByUsername(username.text);
-    if (recipientId != null) {
+    Map recipient = await FirestoreTask.findRecipient(username.text);
+    if (recipient != null) {
       error = false;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => MessageThread(
-            recipientId: recipientId,
+            recipient: recipient,
           ),
         ),
       );

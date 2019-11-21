@@ -39,16 +39,18 @@ class FirestoreTask {
     }
   }
 
-  static Future<String> findIdByUsername(String username) async {
+  static Future<Map> findRecipient(String username) async {
     QuerySnapshot q = await Firestore.instance
         .collection('users')
         .where('username', isEqualTo: username)
         .getDocuments();
 
     if(q.documents.length == 1){
+      Map recipient = q.documents[0].data;
       String recipientId = q.documents[0].documentID;
       if(recipientId != Auth.uid){
-        return recipientId;
+        recipient['id'] = recipientId;
+        return recipient;
       }
     }
     return null;
