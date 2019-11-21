@@ -19,7 +19,7 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Instant", style: TextStyle(fontFamily: 'Montserrat')),
+        title: Text("Instant", style: TextStyle(fontFamily: 'Pacifico')),
         backgroundColor: Colors.black,
         actions: <Widget>[
           IconButton(
