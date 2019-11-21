@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instant/pages/NewMessage.dart';
 import 'package:instant/utilities/Auth.dart';
 
 class Dashboard extends StatefulWidget {
@@ -7,23 +8,30 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  newMessage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NewMessage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Instant", style:TextStyle(fontFamily: 'Montserrat')),
+        title: Text("Instant", style: TextStyle(fontFamily: 'Montserrat')),
         backgroundColor: Colors.black,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.menu),
-            onPressed: ()=>{},
+            onPressed: (){},
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
-        onPressed: (){},
+        onPressed: newMessage,
         child: Icon(Icons.message),
       ),
       body: Container(
