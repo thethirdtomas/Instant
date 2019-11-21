@@ -4,7 +4,6 @@ import 'package:instant/utilities/Auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class FirestoreTask {
-  
   static Future<bool> usernameExist(String username) async {
     QuerySnapshot q = await Firestore.instance
         .collection('users')
@@ -18,25 +17,37 @@ class FirestoreTask {
     return false;
   }
 
-  static void createProfile({String name, String username, String bio, String profileImage}){
+  static void createProfile(
+      {String name, String username, String bio, String profileImage}) {
     Firestore.instance.collection('users').document(Auth.uid).setData({
       'name': name,
       'username': username,
-      'bio':bio,
+      'bio': bio,
       'profileImage': profileImage,
     });
   }
 
-   static Future<String> uploadImage(File profileImage) async{
-    try{
-    StorageReference fsr = FirebaseStorage.instance.ref().child('profileImages/${Auth.uid}.jpg');
-    StorageUploadTask task = fsr.putFile(profileImage);
-    StorageTaskSnapshot imageUrl = await task.onComplete;
-    return await imageUrl.ref.getDownloadURL();
-    
-    }
-    catch(e){
+  static Future<String> uploadImage(File profileImage) async {
+    try {
+      StorageReference fsr =
+          FirebaseStorage.instance.ref().child('profileImages/${Auth.uid}.jpg');
+      StorageUploadTask task = fsr.putFile(profileImage);
+      StorageTaskSnapshot imageUrl = await task.onComplete;
+      return await imageUrl.ref.getDownloadURL();
+    } catch (e) {
       return null;
     }
+  }
+
+  static Future<String> findIdByUsername(String username) async {
+    QuerySnapshot q = await Firestore.instance
+        .collection('users')
+        .where('username', isEqualTo: username)
+        .getDocuments();
+
+    if(q.documents.length == 1){
+      return q.documents[0].documentID;
+    }
+    return null;
   }
 }
