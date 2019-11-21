@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:instant/pages/MessageThread.dart';
 import 'package:instant/utilities/FirestoreTask.dart';
 import 'package:instant/widgets/GradiantButton.dart';
 
@@ -13,18 +14,24 @@ class _NewMessageState extends State<NewMessage> {
   bool loading = false;
   bool error = false;
 
-  message() async{
+  message() async {
     setState(() {
       loading = true;
     });
 
     String recipientId = await FirestoreTask.findIdByUsername(username.text);
-    if(recipientId == null){
-      error = true;
-    }else{
+    if (recipientId != null) {
       error = false;
-      print(recipientId);
-      //navigate to message thread
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MessageThread(
+            recipientId: recipientId,
+          ),
+        ),
+      );
+    }else{
+      error = true;
     }
     setState(() {
       loading = false;

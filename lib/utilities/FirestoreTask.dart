@@ -46,7 +46,10 @@ class FirestoreTask {
         .getDocuments();
 
     if(q.documents.length == 1){
-      return q.documents[0].documentID;
+      String recipientId = q.documents[0].documentID;
+      if(recipientId != Auth.uid){
+        return recipientId;
+      }
     }
     return null;
   }
