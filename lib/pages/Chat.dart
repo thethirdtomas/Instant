@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instant/pages/Proile.dart';
+import 'package:instant/utilities/FirestoreStreams.dart';
 import 'package:instant/utilities/FirestoreTask.dart';
+import 'package:instant/widgets/MessageThread.dart';
 
 class Chat extends StatefulWidget {
   final Map recipient;
@@ -80,6 +83,17 @@ class _ChatState extends State<Chat> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
+              StreamBuilder<QuerySnapshot>(
+                stream: FirestoreStreams.messagesStream(
+                    FirestoreTask.getCompositeId(widget.recipient['id'])),
+                builder: (context, snapshots){
+                  if(snapshots.hasData){
+                    List messages = snapshots.data.documents;
+                    return MessageThread(messages: messages);
+                  }
+                  return Text("");
+                },
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: TextField(

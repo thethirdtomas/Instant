@@ -57,7 +57,7 @@ class FirestoreTask {
   }
 
   static void sendMessage({String recipientId, String message}) {
-    String compositeId = _getCompositeId(recipientId);
+    String compositeId = getCompositeId(recipientId);
     Timestamp now = Timestamp.now();
 
     //updates users data
@@ -94,7 +94,7 @@ class FirestoreTask {
         });
   }
 
-  static String _getCompositeId(String recipientId) {
+  static String getCompositeId(String recipientId) {
     if (Auth.uid.compareTo(recipientId) == -1) {
       return Auth.uid + recipientId;
     }
