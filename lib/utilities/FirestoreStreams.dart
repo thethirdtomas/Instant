@@ -10,7 +10,7 @@ class FirestoreStreams {
         .collection('chats')
         .document(compositeId)
         .collection('messages')
-        .orderBy('timeSent')
+        .orderBy('timeSent', descending: true)
         .snapshots();
   }
 }

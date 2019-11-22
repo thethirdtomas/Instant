@@ -13,6 +13,8 @@ class MessageThread extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.only(left: 8, right: 8),
         child: ListView.builder(
+          reverse: true,
+          shrinkWrap: true,
           itemCount: messages.length,
           itemBuilder: (context, index) {
             String message = messages[index].data['message'];
@@ -20,7 +22,11 @@ class MessageThread extends StatelessWidget {
             bool isUser = user == Auth.uid;
             Timestamp timestamp = messages[index].data['timeSent'];
             String time = DateFormat("jm").format(timestamp.toDate());
-            return MessageBubble(isUser: isUser, message: message,time: time,);
+            return MessageBubble(
+              isUser: isUser,
+              message: message,
+              time: time,
+            );
           },
         ),
       ),

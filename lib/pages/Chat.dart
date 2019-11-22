@@ -32,7 +32,10 @@ class _ChatState extends State<Chat> {
     if (!empty) {
       FirestoreTask.sendMessage(
           recipientId: widget.recipient['id'], message: message.text);
-      message.clear();
+      setState(() {
+        message.clear();
+        empty = true;
+      });
     }
   }
 
@@ -86,8 +89,8 @@ class _ChatState extends State<Chat> {
               StreamBuilder<QuerySnapshot>(
                 stream: FirestoreStreams.messagesStream(
                     FirestoreTask.getCompositeId(widget.recipient['id'])),
-                builder: (context, snapshots){
-                  if(snapshots.hasData){
+                builder: (context, snapshots) {
+                  if (snapshots.hasData) {
                     List messages = snapshots.data.documents;
                     return MessageThread(messages: messages);
                   }
