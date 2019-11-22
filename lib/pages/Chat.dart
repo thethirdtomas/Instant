@@ -1,43 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:instant/pages/Proile.dart';
+import 'package:instant/utilities/FirestoreTask.dart';
 
-class MessageThread extends StatefulWidget {
+class Chat extends StatefulWidget {
   final Map recipient;
-  MessageThread({@required this.recipient});
+  Chat({@required this.recipient});
   @override
-  _MessageThreadState createState() => _MessageThreadState();
+  _ChatState createState() => _ChatState();
 }
 
-class _MessageThreadState extends State<MessageThread> {
+class _ChatState extends State<Chat> {
   TextEditingController message = TextEditingController();
 
   bool empty = true;
-  checkEmpty(String msg){
-    if(empty && msg != ''){
+  checkEmpty(String msg) {
+    if (empty && msg != '') {
       setState(() {
         empty = false;
       });
-    } else if(!empty && msg == ''){
+    } else if (!empty && msg == '') {
       setState(() {
         empty = true;
       });
     }
   }
 
-  sendMessage(){
-    if(!empty){
-
+  sendMessage() {
+    if (!empty) {
+      FirestoreTask.sendMessage(
+          recipientId: widget.recipient['id'], message: message.text);
+      message.clear();
     }
   }
 
-  viewProfile(){
+  viewProfile() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>Profile(
+        builder: (context) => Profile(
           user: widget.recipient,
-        )
-      )
+        ),
+      ),
     );
   }
 
@@ -56,13 +59,17 @@ class _MessageThreadState extends State<MessageThread> {
                   height: 40,
                   margin: EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              widget.recipient['profileImage']),),),
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(widget.recipient['profileImage']),
+                    ),
+                  ),
                 ),
-                Text(widget.recipient['name'], style: TextStyle(fontFamily: "Montserrat"),),
+                Text(
+                  widget.recipient['name'],
+                  style: TextStyle(fontFamily: "Montserrat"),
+                ),
               ],
             ),
           ),
@@ -74,7 +81,7 @@ class _MessageThreadState extends State<MessageThread> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left:8.0),
+                padding: const EdgeInsets.only(left: 8.0),
                 child: TextField(
                   controller: message,
                   onChanged: checkEmpty,
@@ -83,10 +90,13 @@ class _MessageThreadState extends State<MessageThread> {
                       hintText: "Message",
                       hintStyle: TextStyle(color: Colors.grey),
                       border: InputBorder.none,
-                      prefixIcon: Icon(Icons.tag_faces, color: Colors.grey,),
+                      prefixIcon: Icon(
+                        Icons.tag_faces,
+                        color: Colors.grey,
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(Icons.send),
-                        color:empty?Colors.grey:Colors.white,
+                        color: empty ? Colors.grey : Colors.white,
                         onPressed: sendMessage,
                       )),
                 ),

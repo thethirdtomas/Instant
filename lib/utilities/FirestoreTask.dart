@@ -45,14 +45,59 @@ class FirestoreTask {
         .where('username', isEqualTo: username)
         .getDocuments();
 
-    if(q.documents.length == 1){
+    if (q.documents.length == 1) {
       Map recipient = q.documents[0].data;
       String recipientId = q.documents[0].documentID;
-      if(recipientId != Auth.uid){
+      if (recipientId != Auth.uid) {
         recipient['id'] = recipientId;
         return recipient;
       }
     }
     return null;
+  }
+
+  static void sendMessage({String recipientId, String message}) {
+    String compositeId = _getCompositeId(recipientId);
+    Timestamp now = Timestamp.now();
+
+    //updates users data
+    Firestore.instance
+        .collection('users')
+        .document(Auth.uid)
+        .collection('recipients')
+        .document(recipientId)
+        .setData({
+      'lastMessage': message,
+      'timeSent': now,
+    });
+    //updates recipients data
+    Firestore.instance
+        .collection('users')
+        .document(recipientId)
+        .collection('recipients')
+        .document(Auth.uid)
+        .setData({
+      'lastMessage': message,
+      'timeSent': now,
+    });
+
+    //addes message to chat
+    Firestore.instance
+        .collection('chats')
+        .document(compositeId)
+        .collection('messages')
+        .document()
+        .setData({
+          'message': message,
+          'timeSent': now,
+          'user':Auth.uid,
+        });
+  }
+
+  static String _getCompositeId(String recipientId) {
+    if (Auth.uid.compareTo(recipientId) == -1) {
+      return Auth.uid + recipientId;
+    }
+    return recipientId + Auth.uid;
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:instant/pages/MessageThread.dart';
+import 'package:instant/pages/Chat.dart';
 import 'package:instant/utilities/FirestoreTask.dart';
 import 'package:instant/widgets/GradiantButton.dart';
 
@@ -25,7 +25,7 @@ class _NewMessageState extends State<NewMessage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MessageThread(
+          builder: (context) => Chat(
             recipient: recipient,
           ),
         ),
