@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth {
   static String uid;
@@ -19,14 +20,23 @@ class Auth {
   }
 
   static Future<bool> signIn(AuthCredential cred) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       AuthResult result =
           await FirebaseAuth.instance.signInWithCredential(cred);
       uid = result.user.uid;
+      prefs.setString('uid', uid);
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  static void signOut() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    FirebaseAuth.instance.signOut();
+    prefs.remove('uid');
+
   }
 
   static AuthCredential verifyCode(String smsCode, String verificationId) {

@@ -46,10 +46,7 @@ class RecipientTile extends StatelessWidget {
             ),
           );
         }
-        return Text(
-          "error",
-          style: TextStyle(color: Colors.white),
-        );
+        return Text("");
       },
     );
   }

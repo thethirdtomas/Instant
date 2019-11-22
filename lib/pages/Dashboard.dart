@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instant/pages/Chat.dart';
 import 'package:instant/pages/NewMessage.dart';
+import 'package:instant/pages/Welcome.dart';
+import 'package:instant/utilities/Auth.dart';
 import 'package:instant/utilities/FirestoreStreams.dart';
 import 'package:instant/widgets/RecipientTile.dart';
 
@@ -34,7 +36,10 @@ class _DashboardState extends State<Dashboard> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.menu),
-            onPressed: () {},
+            onPressed: () {
+              Auth.signOut();
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Welcome()));
+            },
           )
         ],
       ),
