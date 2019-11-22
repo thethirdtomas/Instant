@@ -56,6 +56,20 @@ class FirestoreTask {
     return null;
   }
 
+  static Future<Map> findRecipientById(String id) async {
+    DocumentSnapshot d = await Firestore.instance
+        .collection('users')
+        .document(id)
+        .get();
+
+    if (d.exists) {
+      Map recipient = d.data;
+      recipient['id'] = d.documentID;
+      return recipient;
+    }
+    return null;
+  }
+
   static void sendMessage({String recipientId, String message}) {
     String compositeId = getCompositeId(recipientId);
     Timestamp now = Timestamp.now();

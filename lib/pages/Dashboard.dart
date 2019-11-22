@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instant/pages/Chat.dart';
 import 'package:instant/pages/NewMessage.dart';
-import 'package:instant/utilities/Auth.dart';
+import 'package:instant/utilities/FirestoreStreams.dart';
+import 'package:instant/widgets/RecipientTile.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -15,6 +18,13 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  viewChat(Map recipient) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context)=>Chat(recipient: recipient,))
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +34,7 @@ class _DashboardState extends State<Dashboard> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.menu),
-            onPressed: (){},
+            onPressed: () {},
           )
         ],
       ),
@@ -35,13 +45,30 @@ class _DashboardState extends State<Dashboard> {
         child: Icon(Icons.message),
       ),
       body: Container(
-        color: Colors.black,
-        child: Center(
-            child: Text(
-          Auth.uid,
-          style: TextStyle(color: Colors.white),
-        )),
-      ),
+          color: Colors.black,
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirestoreStreams.recipientsStream(),
+            builder: (context, snapshots) {
+              if (snapshots.hasData) {
+                List recipients = snapshots.data.documents;
+                return ListView.builder(
+                  itemCount: recipients.length,
+                  itemBuilder: (context, index) {
+                    Map recipientData = recipients[index].data;
+                    recipientData['id'] = recipients[index].documentID;
+                    return RecipientTile(
+                      data: recipientData,
+                      onTap: viewChat,
+                    );
+                  },
+                );
+              }
+              return Center(
+                  child: CircularProgressIndicator(
+                backgroundColor: Colors.green[300],
+              ));
+            },
+          )),
     );
   }
 }

@@ -13,4 +13,8 @@ class FirestoreStreams {
         .orderBy('timeSent', descending: true)
         .snapshots();
   }
+
+  static Stream<QuerySnapshot> recipientsStream() {
+    return _user.collection('recipients').orderBy('timeSent').snapshots();
+  }
 }

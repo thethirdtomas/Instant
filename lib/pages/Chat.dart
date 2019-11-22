@@ -98,7 +98,7 @@ class _ChatState extends State<Chat> {
                 },
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 8.0),
+                padding: const EdgeInsets.only(left: 8.0, top: 15.0),
                 child: TextField(
                   controller: message,
                   onChanged: checkEmpty,

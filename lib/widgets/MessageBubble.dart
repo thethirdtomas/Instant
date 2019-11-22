@@ -7,7 +7,7 @@ class MessageBubble extends StatelessWidget {
       {@required this.message, @required this.time, @required this.isUser});
   @override
   Widget build(BuildContext context) {
-    final bg = isUser ? Colors.green[100] : Colors.green[300];
+    final bg = isUser ? Colors.green[300] : Colors.green[100];
     final align = isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
     final radius = isUser
         ? BorderRadius.only(
