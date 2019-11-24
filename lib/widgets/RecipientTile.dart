@@ -60,6 +60,19 @@ class RecipientTile extends StatelessWidget {
   }
 
   String formatTime(Timestamp timestamp){
-    return DateFormat("jm").format(timestamp.toDate());
+    DateTime dt = timestamp.toDate();
+    DateTime oneDayAgo = DateTime.now().subtract(Duration(days: 1));
+    DateTime oneWeekAgo = DateTime.now().subtract(Duration(days: 7));
+    DateTime oneYearAgo = DateTime.now().subtract(Duration(days: 365));
+    
+    if(dt.isBefore(oneYearAgo)){
+      return DateFormat('yMd').format(dt);
+    }
+    if(dt.isBefore(oneWeekAgo)){
+      return DateFormat('MMMd').format(dt);
+    }else if(dt.isBefore(oneDayAgo)){
+      return DateFormat('E').format(dt);
+    }
+    return DateFormat("jm").format(dt);
   }
 }
