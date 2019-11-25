@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instant/pages/Proile.dart';
@@ -61,15 +62,16 @@ class _ChatState extends State<Chat> {
           child: Container(
             child: Row(
               children: <Widget>[
-                Container(
-                  width: 40,
-                  height: 40,
-                  margin: EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(widget.recipient['profileImage']),
+                CachedNetworkImage(
+                  imageUrl: widget.recipient['profileImage'],
+                  imageBuilder: (context, imageProvider) => Container(
+                    margin: EdgeInsets.only(right: 10),
+                    width: 40.0,
+                    height: 40.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
                     ),
                   ),
                 ),
@@ -92,7 +94,8 @@ class _ChatState extends State<Chat> {
                     FirestoreTask.getCompositeId(widget.recipient['id'])),
                 builder: (context, snapshots) {
                   if (snapshots.hasData) {
-                    List messages = timeFormatedMessages(snapshots.data.documents);
+                    List messages =
+                        timeFormatedMessages(snapshots.data.documents);
                     return MessageThread(messages: messages);
                   }
                   return Text("");
@@ -132,7 +135,8 @@ class _ChatState extends State<Chat> {
 
     for (int i = 1; i < messages.length; i++) {
       DateTime timeSent = messages[i].data['timeSent'].toDate();
-      if(DateFormat('yMd').format(timeSent) != DateFormat('yMd').format(currentDay)){
+      if (DateFormat('yMd').format(timeSent) !=
+          DateFormat('yMd').format(currentDay)) {
         tfm.add(formatTime(currentDay));
         currentDay = timeSent;
       }
@@ -142,20 +146,22 @@ class _ChatState extends State<Chat> {
     return tfm;
   }
 
-  String formatTime(DateTime dt){
+  String formatTime(DateTime dt) {
     DateTime oneDayAgo = DateTime.now().subtract(Duration(days: 1));
     DateTime twoDaysAgo = DateTime.now().subtract(Duration(days: 2));
     DateTime oneWeekAgo = DateTime.now().subtract(Duration(days: 7));
     DateTime oneYearAgo = DateTime.now().subtract(Duration(days: 365));
-    
-    if(dt.isBefore(oneYearAgo)){
+
+    if (dt.isBefore(oneYearAgo)) {
       return DateFormat('yMd').format(dt);
     }
-    if(dt.isBefore(oneWeekAgo)){
+    if (dt.isBefore(oneWeekAgo)) {
       return DateFormat('MMMd').format(dt);
-    }else if(dt.isBefore(twoDaysAgo) || DateFormat('yMd').format(dt) == DateFormat('yMd').format(twoDaysAgo)){
+    } else if (dt.isBefore(twoDaysAgo) ||
+        DateFormat('yMd').format(dt) == DateFormat('yMd').format(twoDaysAgo)) {
       return DateFormat('EEEE').format(dt);
-    }else if(DateFormat('yMd').format(dt) == DateFormat('yMd').format(oneDayAgo)){
+    } else if (DateFormat('yMd').format(dt) ==
+        DateFormat('yMd').format(oneDayAgo)) {
       return "Yesterday";
     }
     return "Today";

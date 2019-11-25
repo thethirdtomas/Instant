@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -38,22 +39,29 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                 ),
-                Container(
-                  width: 100,
-                  height: 100,
-                  margin: EdgeInsets.only(top: 10),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(widget.user['profileImage']),
+                CachedNetworkImage(
+                  imageUrl: widget.user['profileImage'],
+                  imageBuilder: (context, imageProvider) => Container(
+                    margin: EdgeInsets.only(top: 10),
+                    width: 100.0,
+                    height: 100.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
                     ),
                   ),
                 ),
               ],
             ),
-            Text("@${widget.user['username']}", style: TextStyle(color:Colors.white, fontFamily: 'Montserrat', fontSize: 20)),
-            Text("${widget.user['bio']}", style: TextStyle(color:Colors.green[100], fontFamily: "Montserrat"))
+            Text("@${widget.user['username']}",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    fontSize: 20)),
+            Text("${widget.user['bio']}",
+                style: TextStyle(
+                    color: Colors.green[100], fontFamily: "Montserrat"))
           ],
         ),
       ),
