@@ -104,6 +104,7 @@ class _ChatState extends State<Chat> {
                   controller: message,
                   onChanged: checkEmpty,
                   style: TextStyle(color: Colors.white),
+                  maxLines: null,
                   decoration: InputDecoration(
                       hintText: "Message",
                       hintStyle: TextStyle(color: Colors.grey),
