@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:instant/pages/Dashboard.dart';
-import 'package:instant/utilities/Auth.dart';
 import 'package:instant/utilities/FirestoreTask.dart';
 import 'package:instant/widgets/GradiantButton.dart';
 import 'package:image_picker/image_picker.dart';

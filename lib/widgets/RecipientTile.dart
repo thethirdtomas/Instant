@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instant/utilities/Auth.dart';
 import 'package:instant/utilities/FirestoreTask.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,6 +14,7 @@ class RecipientTile extends StatelessWidget {
     String recipientId = data['id'];
     String lastMessage = formatMessage(data['lastMessage']);
     String timeSent = formatTime(data['timeSent']);
+    bool read = data['read'] || data['user'] == Auth.uid;
     return FutureBuilder<Map>(
       future: FirestoreTask.findRecipientById(recipientId),
       builder: (context, snapshot) {
@@ -33,11 +35,18 @@ class RecipientTile extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(lastMessage, style: TextStyle(color: Colors.white)),
               ),
-              trailing: Text(
-                timeSent,
-                style: TextStyle(color: Colors.grey, fontSize: 12),
+              trailing: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    timeSent,
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                  Icon(Icons.fiber_manual_record, color: read?Colors.black:Colors.green,size: 15,)
+                ],
               ),
               leading: CachedNetworkImage(
+                placeholder: (context, url) => CircularProgressIndicator(),
                 imageUrl: recipient['profileImage'],
                 imageBuilder: (context, imageProvider) => Container(
                   width: 50.0,

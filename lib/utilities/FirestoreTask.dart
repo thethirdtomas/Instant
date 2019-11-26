@@ -57,10 +57,8 @@ class FirestoreTask {
   }
 
   static Future<Map> findRecipientById(String id) async {
-    DocumentSnapshot d = await Firestore.instance
-        .collection('users')
-        .document(id)
-        .get();
+    DocumentSnapshot d =
+        await Firestore.instance.collection('users').document(id).get();
 
     if (d.exists) {
       Map recipient = d.data;
@@ -83,6 +81,8 @@ class FirestoreTask {
         .setData({
       'lastMessage': message,
       'timeSent': now,
+      'read': true,
+      'user': Auth.uid,
     });
     //updates recipients data
     Firestore.instance
@@ -93,6 +93,8 @@ class FirestoreTask {
         .setData({
       'lastMessage': message,
       'timeSent': now,
+      'read': false,
+      'user': Auth.uid,
     });
 
     //addes message to chat
@@ -102,10 +104,10 @@ class FirestoreTask {
         .collection('messages')
         .document()
         .setData({
-          'message': message,
-          'timeSent': now,
-          'user':Auth.uid,
-        });
+      'message': message,
+      'timeSent': now,
+      'user': Auth.uid,
+    });
   }
 
   static String getCompositeId(String recipientId) {
@@ -113,5 +115,16 @@ class FirestoreTask {
       return Auth.uid + recipientId;
     }
     return recipientId + Auth.uid;
+  }
+
+  static void markAsRead(String recipientId) async {
+    Firestore.instance
+        .collection('users')
+        .document(Auth.uid)
+        .collection('recipients')
+        .document(recipientId)
+        .updateData({
+          'read':true,
+        });
   }
 }
