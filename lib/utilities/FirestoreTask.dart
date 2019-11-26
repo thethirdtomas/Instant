@@ -107,6 +107,7 @@ class FirestoreTask {
       'message': message,
       'timeSent': now,
       'user': Auth.uid,
+      'read': false,
     });
   }
 
@@ -124,7 +125,18 @@ class FirestoreTask {
         .collection('recipients')
         .document(recipientId)
         .updateData({
-          'read':true,
+      'read': true,
+    });
+  }
+
+  static void markMessageAsRead(String compositeId, String messageId) {
+    Firestore.instance
+        .collection('chats')
+        .document(compositeId)
+        .collection('messages')
+        .document(messageId)
+        .updateData({
+          'read': true,
         });
   }
 }

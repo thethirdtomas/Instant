@@ -15,12 +15,15 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  String compositeId;
   TextEditingController message = TextEditingController();
   bool empty = true;
   @override
   void initState(){
     super.initState();
+    compositeId = FirestoreTask.getCompositeId(widget.recipient['id']);
     FirestoreTask.markAsRead(widget.recipient['id']);
+
   }
   checkEmpty(String msg) {
     if (empty && msg != '') {
@@ -94,8 +97,7 @@ class _ChatState extends State<Chat> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               StreamBuilder<QuerySnapshot>(
-                stream: FirestoreStreams.messagesStream(
-                    FirestoreTask.getCompositeId(widget.recipient['id'])),
+                stream: FirestoreStreams.messagesStream(compositeId),
                 builder: (context, snapshots) {
                   if (snapshots.hasData) {
                     if(snapshots.data.documents.isEmpty){
@@ -104,7 +106,7 @@ class _ChatState extends State<Chat> {
                     FirestoreTask.markAsRead(widget.recipient['id']);
                     List messages =
                         timeFormatedMessages(snapshots.data.documents);
-                    return MessageThread(messages: messages);
+                    return MessageThread(messages: messages, compositeId: compositeId,);
                   }
                   return Text("");
                 },
