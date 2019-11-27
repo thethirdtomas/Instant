@@ -2,9 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instant/utilities/Auth.dart';
 
 class FirestoreStreams {
-  static DocumentReference _user =
-      Firestore.instance.collection('users').document(Auth.uid);
-
   static Stream<QuerySnapshot> messagesStream(String compositeId) {
     return Firestore.instance
         .collection('chats')
@@ -15,6 +12,11 @@ class FirestoreStreams {
   }
 
   static Stream<QuerySnapshot> recipientsStream() {
-    return _user.collection('recipients').orderBy('timeSent', descending: true).snapshots();
+    return Firestore.instance
+        .collection('users')
+        .document(Auth.uid)
+        .collection('recipients')
+        .orderBy('timeSent', descending: true)
+        .snapshots();
   }
 }
