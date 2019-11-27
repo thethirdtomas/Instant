@@ -66,6 +66,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
   signIn(AuthCredential cred) async {
     if (await Auth.signIn(cred)) {
       if(await Auth.userExist()){
+        Auth.cacheCred();
         Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => Dashboard()));
       }else{

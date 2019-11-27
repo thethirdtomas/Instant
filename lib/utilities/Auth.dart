@@ -20,23 +20,26 @@ class Auth {
   }
 
   static Future<bool> signIn(AuthCredential cred) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       AuthResult result =
           await FirebaseAuth.instance.signInWithCredential(cred);
       uid = result.user.uid;
-      prefs.setString('uid', uid);
       return true;
     } catch (e) {
       return false;
     }
   }
 
+  static void cacheCred() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('uid', uid);
+  }
+
   static void signOut() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     FirebaseAuth.instance.signOut();
     prefs.remove('uid');
-
+    uid = null;
   }
 
   static AuthCredential verifyCode(String smsCode, String verificationId) {
