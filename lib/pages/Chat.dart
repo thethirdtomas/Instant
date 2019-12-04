@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:instant/pages/Proile.dart';
 import 'package:instant/utilities/FirestoreStreams.dart';
@@ -18,13 +19,14 @@ class _ChatState extends State<Chat> {
   String compositeId;
   TextEditingController message = TextEditingController();
   bool empty = true;
+  bool emoji = false;
   @override
-  void initState(){
+  void initState() {
     super.initState();
     compositeId = FirestoreTask.getCompositeId(widget.recipient['id']);
     FirestoreTask.markAsRead(widget.recipient['id']);
-
   }
+
   checkEmpty(String msg) {
     if (empty && msg != '') {
       setState(() {
@@ -35,6 +37,12 @@ class _ChatState extends State<Chat> {
         empty = true;
       });
     }
+  }
+
+  toggleEmoji(){
+    setState(() {
+      emoji = !emoji;
+    });
   }
 
   sendMessage() {
@@ -100,13 +108,16 @@ class _ChatState extends State<Chat> {
                 stream: FirestoreStreams.messagesStream(compositeId),
                 builder: (context, snapshots) {
                   if (snapshots.hasData) {
-                    if(snapshots.data.documents.isEmpty){
+                    if (snapshots.data.documents.isEmpty) {
                       return MessageThread(messages: snapshots.data.documents);
                     }
                     FirestoreTask.markAsRead(widget.recipient['id']);
                     List messages =
                         timeFormatedMessages(snapshots.data.documents);
-                    return MessageThread(messages: messages, compositeId: compositeId,);
+                    return MessageThread(
+                      messages: messages,
+                      compositeId: compositeId,
+                    );
                   }
                   return Text("");
                 },
@@ -123,9 +134,10 @@ class _ChatState extends State<Chat> {
                       hintText: "Message",
                       hintStyle: TextStyle(color: Colors.grey),
                       border: InputBorder.none,
-                      prefixIcon: Icon(
-                        Icons.tag_faces,
-                        color: Colors.grey,
+                      prefixIcon: IconButton(
+                        icon: Icon(Icons.tag_faces),
+                        color:emoji? Colors.white:Colors.grey,
+                        onPressed: toggleEmoji,
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(Icons.send),
@@ -133,7 +145,21 @@ class _ChatState extends State<Chat> {
                         onPressed: sendMessage,
                       )),
                 ),
+              ),
+              emoji?EmojiPicker(
+                rows: 1,
+                columns: 10,
+                numRecommended: 50,
+                onEmojiSelected: (emoji, category) {
+                  message.text += emoji.emoji;
+                  checkEmpty(message.text);
+                  message.selection = TextSelection.fromPosition(
+                      TextPosition(offset: message.text.length));
+                  setState(() {});
+                  
+                },
               )
+              :Padding(padding: EdgeInsets.all(0),),
             ],
           )),
     );
