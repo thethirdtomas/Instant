@@ -13,6 +13,15 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  menu(int choice) {
+    if (choice == 0) {
+    } else if (choice == 1) {
+      Auth.signOut();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Welcome()));
+    }
+  }
+
   newMessage() {
     Navigator.push(
       context,
@@ -22,9 +31,11 @@ class _DashboardState extends State<Dashboard> {
 
   viewChat(Map recipient) {
     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context)=>Chat(recipient: recipient,))
-    );
+        context,
+        MaterialPageRoute(
+            builder: (context) => Chat(
+                  recipient: recipient,
+                )));
   }
 
   @override
@@ -34,11 +45,24 @@ class _DashboardState extends State<Dashboard> {
         title: Text("Instant", style: TextStyle(fontFamily: 'Pacifico')),
         backgroundColor: Colors.black,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              Auth.signOut();
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Welcome()));
+          PopupMenuButton<int>(
+            color: Colors.white,
+            offset: Offset(20, 20),
+            icon: Icon(Icons.menu, color: Colors.white),
+            onSelected: menu,
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  child: Text("My Profile",
+                      style: TextStyle(fontFamily: 'Montserrat')),
+                  value: 0,
+                ),
+                PopupMenuItem(
+                  child: Text("Log Out",
+                      style: TextStyle(fontFamily: 'Montserrat')),
+                  value: 1,
+                ),
+              ];
             },
           )
         ],
