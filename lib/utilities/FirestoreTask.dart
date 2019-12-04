@@ -118,15 +118,20 @@ class FirestoreTask {
     return recipientId + Auth.uid;
   }
 
-  static void markAsRead(String recipientId) async {
-    Firestore.instance
+  static void markAsRead(String recipientId) {
+    DocumentReference recipient = Firestore.instance
         .collection('users')
         .document(Auth.uid)
         .collection('recipients')
-        .document(recipientId)
-        .updateData({
-      'read': true,
-    });
+        .document(recipientId);
+
+        recipient.get().then((DocumentSnapshot snapshot){
+          if(snapshot.exists){
+            recipient.updateData({
+                'read': true,
+            });
+          }
+        });
   }
 
   static void markMessageAsRead(String compositeId, String messageId) {
@@ -136,7 +141,7 @@ class FirestoreTask {
         .collection('messages')
         .document(messageId)
         .updateData({
-          'read': true,
-        });
+      'read': true,
+    });
   }
 }
