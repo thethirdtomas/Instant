@@ -168,29 +168,19 @@ class FirestoreTask {
   static void updateProfileImage(File image) async {
     DocumentReference userRef =
         Firestore.instance.collection('users').document(Auth.uid);
-    DocumentSnapshot user = await userRef.get();
-    String oldImageUrl = user.data['profileImage'];
-    bool update = true;
-    String newImageUrl;
-
     try {
       StorageReference fsr =
           FirebaseStorage.instance.ref().child('profileImages/${Auth.uid}.jpg');
       StorageUploadTask task = fsr.putFile(image);
       StorageTaskSnapshot imageUrl = await task.onComplete;
-      newImageUrl = await imageUrl.ref.getDownloadURL();
-    } catch (e) {
-      print(e);
-      update = false;
-    }
-
-    if (update && newImageUrl != null) {
-      await userRef.updateData({
+      String newImageUrl = await imageUrl.ref.getDownloadURL();
+      userRef.updateData({
         'profileImage': newImageUrl,
       });
-      StorageReference oldImageUrlRef =
-          await FirebaseStorage.instance.getReferenceFromUrl(oldImageUrl);
-      oldImageUrlRef.delete();
+    } catch (e) {
+    
     }
+
+    
   }
 }
