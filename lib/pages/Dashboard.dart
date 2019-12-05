@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instant/pages/Chat.dart';
 import 'package:instant/pages/NewMessage.dart';
+import 'package:instant/pages/UserProfile.dart';
 import 'package:instant/pages/Welcome.dart';
 import 'package:instant/utilities/Auth.dart';
 import 'package:instant/utilities/FirestoreStreams.dart';
@@ -15,6 +16,8 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   menu(int choice) {
     if (choice == 0) {
+       Navigator.push(
+          context, MaterialPageRoute(builder: (context) => UserProfile()));
     } else if (choice == 1) {
       Auth.signOut();
       Navigator.pushReplacement(

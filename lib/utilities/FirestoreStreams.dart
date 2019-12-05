@@ -19,4 +19,11 @@ class FirestoreStreams {
         .orderBy('timeSent', descending: true)
         .snapshots();
   }
+
+  static Stream<DocumentSnapshot> userStream() {
+    return Firestore.instance
+        .collection('users')
+        .document(Auth.uid)
+        .snapshots();
+  }
 }
