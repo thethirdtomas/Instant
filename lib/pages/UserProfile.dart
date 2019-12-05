@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instant/utilities/FirestoreStreams.dart';
+import 'package:instant/utilities/FirestoreTask.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -9,6 +10,14 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  TextEditingController name = TextEditingController();
+  FocusNode nameFocus = FocusNode();
+
+  updateName() {
+    FirestoreTask.updateName(name.text);
+    nameFocus.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,6 +27,9 @@ class _UserProfileState extends State<UserProfile> {
         stream: FirestoreStreams.userStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            name.text = snapshot.data['name'];
+            name.selection = TextSelection.fromPosition(
+                TextPosition(offset: name.text.length));
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -33,14 +45,23 @@ class _UserProfileState extends State<UserProfile> {
                           icon: Icon(Icons.arrow_back),
                           color: Colors.white,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text(snapshot.data['name'],
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: TextField(
+                              focusNode: nameFocus,
+                              onEditingComplete: updateName,
+                              controller: name,
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontFamily: 'Montserrat',
-                                  fontSize: 33)),
-                        ),
+                                  fontFamily: "Montserrat",
+                                  fontSize: 33),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                     CachedNetworkImage(

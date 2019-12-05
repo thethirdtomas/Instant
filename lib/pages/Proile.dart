@@ -59,9 +59,12 @@ class _ProfileState extends State<Profile> {
                     color: Colors.white,
                     fontFamily: 'Montserrat',
                     fontSize: 20)),
-            Text("${widget.user['bio']}",
-                style: TextStyle(
-                    color: Colors.green[100], fontFamily: "Montserrat"))
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text("${widget.user['bio']}",
+                  style: TextStyle(
+                      color: Colors.green[100], fontFamily: "Montserrat")),
+            )
           ],
         ),
       ),
