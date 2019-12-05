@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:instant/utilities/FirestoreStreams.dart';
 import 'package:instant/utilities/FirestoreTask.dart';
 
@@ -14,6 +16,7 @@ class _UserProfileState extends State<UserProfile> {
   TextEditingController bio = TextEditingController();
   FocusNode nameFocus = FocusNode();
   FocusNode bioFocus = FocusNode();
+  File profileImage;
 
   updateName() {
     FirestoreTask.updateName(name.text);
@@ -23,6 +26,16 @@ class _UserProfileState extends State<UserProfile> {
   updateBio(){
     FirestoreTask.updatebio(bio.text);
     bioFocus.unfocus();
+  }
+
+  updateImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        profileImage = image;
+      });
+      FirestoreTask.updateProfileImage(image);
+    }
   }
 
   @override
@@ -76,14 +89,17 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                       CachedNetworkImage(
                         imageUrl: snapshot.data['profileImage'],
-                        imageBuilder: (context, imageProvider) => Container(
-                          margin: EdgeInsets.only(top: 10),
-                          width: 100.0,
-                          height: 100.0,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.cover),
+                        imageBuilder: (context, imageProvider) => GestureDetector(
+                          onTap: updateImage,
+                          child: Container(
+                            margin: EdgeInsets.only(top: 10),
+                            width: 100.0,
+                            height: 100.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: profileImage == null?imageProvider: FileImage(profileImage), fit: BoxFit.cover),
+                            ),
                           ),
                         ),
                       ),
