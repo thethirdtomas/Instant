@@ -154,4 +154,13 @@ class FirestoreTask {
           .updateData({'name': name});
     }
   }
+  static void updatebio(String bio) {
+    bio = bio.trim();
+    if (bio.length != 0) {
+      Firestore.instance
+          .collection('users')
+          .document(Auth.uid)
+          .updateData({'bio': bio});
+    }
+  }
 }
